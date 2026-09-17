@@ -1,0 +1,19 @@
+sudo mknod /dev/mydev0 c 120 0
+sudo mknod /dev/mydev1 c 120 1
+sudo mknod /dev/mydev2 c 120 2
+sudo mknod /dev/mydev3 c 120 3
+
+sudo insmod devtest.ko device_minor_count=2 buf_size=10
+sudo ./apptest /dev/mydev0 W 123456
+sudo ./apptest /dev/mydev0 W 123456
+sudo ./apptest /dev/mydev0 W 123456
+sudo ./apptest /dev/mydev0 R 6
+sudo ./apptest /dev/mydev0 R 6
+sudo ./apptest /dev/mydev0 R 6
+sudo ./apptest /dev/mydev0 W 123456
+sudo ./apptest /dev/mydev0 I 2
+sudo ./apptest /dev/mydev0 I 1
+sudo ./apptest /dev/mydev0 I 2
+sudo ./apptest /dev/mydev0 W 123456
+sudo ./apptest /dev/mydev0 I 2
+sudo rmmod devtest

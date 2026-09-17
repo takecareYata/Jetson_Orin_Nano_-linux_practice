@@ -1,0 +1,7 @@
+	my_pdev@2212880 {
+		compatible = "my-pdev";
+		reg = <0x0 0x02212880 0x0 0x20>;
+		interrupt-parent = <0xf3>;
+		interrupts = <133 2>;
+		led_status = <0>;
+	}; 

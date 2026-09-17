@@ -1,0 +1,12 @@
+obj-m := devtest.o
+
+KERNELDIR := /lib/modules/$(shell uname -r)/build
+PWD := $(shell pwd)
+
+default:
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+
+clean:
+	rm -f *.o *.ko *.mod *.mod.c modules.order Module.symvers
+	rm -f .*.*.cmd .*.*.*.cmd
+	rm -rf .tmp_versions
