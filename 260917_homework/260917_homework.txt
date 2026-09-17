@@ -1,0 +1,35 @@
+- 과제 1 
+사용자가 속한 보조그룹을 알려주는 명령어는?
+
+groups -> 실행 후 두번째 항목부터 보조그룹을 뜻함.
+id -> 실행 후 출력되는 텍스트에서 'groups=' 이후에 나오는 항목들
+
+- 과제 2 
+cat etc/shadow와 touch /home/aaa 가 permission deny가 뜨는 이유
+
+1. cat etc/shadow 경우 shadow의 권한을 살펴보면 
+aidl@ubuntu:~$ ls -al /etc/shadow
+-rw-r----- 1 root shadow 1733 Aug 27 14:45 /etc/shadow
+실행자가 속한 other 에 대한 어떠한 권한도 부여되어있지 않다.
+
+2. touch /home/aaa 경우 home dirc 의 권한을 살펴보면
+aidl@ubuntu:/$ ls -al | grep home
+drwxr-xr-x   3 root root        4096 Jan  1  1970 home
+실행자가 속한 other 에서 write 권한이 없어서 새로운 생성이 안됨을 확인할 수 있다.
+
+- Bonus
+주요 Glob 문자 종류
+
+-> * (별표): 0개 이상의 모든 문자열과 매칭
+*.txt : 확장자가 .txt인 모든 파일
+a* : a, apple, a123 등 a로 시작하는 모든 파일/폴더
+
+-> ? (물음표): 딱 1개의 모든 문자와 매칭
+file?.txt : file1.txt, fileA.txt (O) / file12.txt (X)
+
+-> [ ] (대괄호): 괄호 안에 명시된 문자 중 1개와 매칭
+[abc].png : a.png, b.png, c.png 만 선택
+file[0-9].log : file0.log부터 file9.log까지 숫자 1자리 매칭
+
+-> [! ] 또는 [^ ] (부정 대괄호): 괄호 안에 없는 문자 1개와 매칭
+[!0-9]* : 숫자로 시작하지 않는 모든 파일
