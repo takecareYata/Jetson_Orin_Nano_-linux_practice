@@ -1,0 +1,9 @@
+1.
+export name=linux
+course=expert
+./var_export.sh 
+
+2.
+name=programming
+export course
+./var_export.sh 

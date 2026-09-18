@@ -1,0 +1,36 @@
+1.
+aarch64-linux-gnu-gcc func.c main.c
+ls
+./a.out
+
+=======결과=======
+aidl@ubuntu:~/work/practice/EX01-12_hello$ aarch64-linux-gnu-gcc func.c main.c
+aidl@ubuntu:~/work/practice/EX01-12_hello$ ls
+a.out  cmd.txt  func.c  main.c
+aidl@ubuntu:~/work/practice/EX01-12_hello$ ./a.out 
+main: Hello!
+func: Hello!
+
+2.
+aarch64-linux-gnu-gcc -S func.c main.c
+ls
+aarch64-linux-gnu-gcc -c func.s main.s
+ls
+aarch64-linux-gnu-gcc -o hello func.o main.o
+ls
+file hello
+
+=======결과=======
+aidl@ubuntu:~/work/practice/EX01-12_hello$ aarch64-linux-gnu-gcc -S func.c main.c
+aidl@ubuntu:~/work/practice/EX01-12_hello$ ls
+cmd.txt  func.c  func.s  main.c  main.s
+aidl@ubuntu:~/work/practice/EX01-12_hello$ aarch64-linux-gnu-gcc -c func.s main.s
+aidl@ubuntu:~/work/practice/EX01-12_hello$ ls
+cmd.txt  func.c  func.o  func.s  main.c  main.o  main.s
+aidl@ubuntu:~/work/practice/EX01-12_hello$ aarch64-linux-gnu-gcc -o hello func.o main.o
+aidl@ubuntu:~/work/practice/EX01-12_hello$ ls
+cmd.txt  func.c  func.o  func.s  hello  main.c  main.o  main.s
+aidl@ubuntu:~/work/practice/EX01-12_hello$ file hello
+hello: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, 
+interpreter /lib/ld-linux-aarch64.so.1, 
+BuildID[sha1]=21985377f6b4d922c0d4e531ba8f2ecf1f4ecd54, for GNU/Linux 3.7.0, not stripped

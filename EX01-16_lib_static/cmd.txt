@@ -1,0 +1,19 @@
+1.라이브러리 생성
+
+cd lib
+aarch64-linux-gnu-gcc -c plus.c minus.c
+aarch64-linux-gnu-ar crv libmycal.a plus.o minus.o
+aarch64-linux-gnu-nm libmycal.a
+cd ..
+
+2. 라이브러리 사용
+
+aarch64-linux-gnu-gcc -o mycalStatic1 main.c lib/libmycal.a
+aarch64-linux-gnu-gcc -o mycalStatic2 main.c -Llib -lmycal
+aarch64-linux-gnu-gcc -o mycalStatic3 main.c -Llib -lmycal --static
+
+====== 생성결과 ======
+-rwxrwxr-x  1 aidl aidl   9096 Sep 18 15:11 mycalStatic1
+-rwxrwxr-x  1 aidl aidl   9096 Sep 18 15:11 mycalStatic2
+-rwxrwxr-x  1 aidl aidl 655168 Sep 18 15:11 mycalStatic3
+공유라이브러리를 전혀 사용하지 않은 --static 옵션을 사용한 것이 가장 용량이 크다.

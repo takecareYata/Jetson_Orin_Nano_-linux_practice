@@ -1,0 +1,48 @@
+- 과제 1
+`cmd` 또는 $(cmd) 로 표현되는 명령 치환에 대해 조사하시오
+
+쉘 스크립트에서 명령어의 실행 결과(표준 출력, stdout)를 문자열 값으로 변환하여 변수에 저장하거나 
+다른 명령어의 인자로 전달하는 기능
+명령 치환 과정에서 결과 문자열 끝에 붙어 있는 모든 개행 문자는 자동으로 삭제됨.
+명령어 실행 중 발생하는 에러 메시지(stderr)는 변수에 담기지 않고 화면에 출력됨. 
+에러 메시지까지 함께 저장하려면 $(cmd 2>&1) 형태의 리다이렉션을 함께 사용해야함.
+
+` : Backtick : 중첩구문을 만들 때, \로 이스케이프해야함. 
+$ : 중첩구문을 만들 때, 자연스럽게 중첩이 가능함.
+예시 1: 
+
+# 현재 날짜 저장
+TODAY=$(date +%Y-%m-%d)
+echo "Today is $TODAY"
+
+# 구식 표현 (동일하게 동작)
+TODAY=`date +%Y-%m-%d`
+
+예시 2: 중첩구문
+
+# 백틱 구문 (가독성이 떨어지고 작성하기 어려움)
+path_files=`ls \`pwd\``
+
+# $(cmd) 구문 (직관적이고 깔끔함)
+path_files=$(ls$(pwd))
+
+- 과제 2
+ls 명령의 리턴값을 조사하시오 (man 명령으로)
+
+-> wsl의 man 명령어에서는 안보임!!!!
+0	성공 (Success)	에러 없이 디렉토리 목록을 정상적으로 출력함
+1	경고 (Minor problems)	일부 파일에 접근할 수 없거나 경로를 찾을 수 없음 (예: 없는 파일 지정)
+2	심각한 에러 (Serious trouble)	잘못된 옵션 사용 또는 심각한 시스템/권한 에러 발생
+
+- 과제 3
+EX01-13의 make hello 동작을 정리하시오
+======결과======
+aidl@ubuntu:~/work/practice/EX01-13_makefile$ make hello
+aarch64-linux-gnu-gcc -c main.c
+aarch64-linux-gnu-gcc -c func.c
+aarch64-linux-gnu-gcc -o hello main.o func.o
+
+왜 마지막 echo가 생성이 안되는가?
+hello: main.o func.o
+	aarch64-linux-gnu-gcc -o hello main.o func.o
+으로 명령이 끝나기 때문이다.

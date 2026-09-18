@@ -1,0 +1,8 @@
+1.
+./var_source.sh
+echo $lvar
+echo $gvar
+source ./var_source.sh
+echo $lvar
+echo $gvar
+env | grep gvar

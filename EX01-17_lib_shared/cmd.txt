@@ -1,0 +1,53 @@
+# 라이브러리 생성
+cd lib
+aarch64-linux-gnu-gcc -c -fPIC plus.c minus.c
+aarch64-linux-gnu-gcc -shared -Wl,-soname,libmycal.so.1 -o libmycal.so.1.2 plus.o minus.o
+ln -s libmycal.so.1.2 libmycal.so.1
+ln -s libmycal.so.1.2 libmycal.so
+cd ..
+
+# 라이브러리 사용
+aarch64-linux-gnu-gcc -o mycalDynamic main.c lib/libmycal.so.1.2
+aarch64-linux-gnu-gcc -o mycalDynamic main.c lib/libmycal.so.1
+aarch64-linux-gnu-gcc -o mycalDynamic main.c lib/libmycal.so
+aarch64-linux-gnu-gcc -o mycalDynamic main.c -Llib -lmycal
+
+# 동작 확인
+./mycalDynamic
+
+======결과======
+./mycalDynamic: error while loading shared libraries: libmycal.so.1: cannot open shared object file: No such file or directory
+-> libmycal.so에 연관된 파일들이 어디에 있는지 그 위치가 파악이 안되기 때문!!
+
+# 동적 링커가 soname 파일을 찾는 방법
+## 방법1 : 공유 라이브러리 환경변수에 경로추가
+mkdir /home/aidl/work/lib
+cp -a lib/libmycal* /home/aidl/work/lib
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/aidl/work/lib
+export LD_LIBRARY_PATH
+./mycalDynamic
+### 공유 라이브러리 환경변수 삭제하는 방법 (에러발생됨)
+unset LD_LIBRARY_PATH
+./mycalDynamic
+	
+## 방법2 : 디폴트 경로에 라이브러리파일 복사
+sudo cp -a lib/libmycal* /lib
+./mycalDynamic
+### 지우기 (에러발생됨)
+sudo rm /lib/libmycal*
+./mycalDynamic
+	
+## 방법3 (vim 삭제)	: 공유라이브러리 config 파일 수정
+# /etc/ld.so.conf 수정
+---------------------------------
+include /etc/ld.so.conf.d/*.conf
+/home/aidl/work/lib
+---------------------------------
+sudo ldconfig
+./mycalDynamic
+# /etc/ld.so.conf 수정
+---------------------------------
+include /etc/ld.so.conf.d/*.conf
+---------------------------------
+sudo ldconfig
+./mycalDynamic
