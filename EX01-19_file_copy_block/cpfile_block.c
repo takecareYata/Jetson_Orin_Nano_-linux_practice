@@ -33,6 +33,40 @@ int main(int argc, char **argv)
 
 	/* Implement code */
 
+	/* open source file */
+	src_fd = open(src_name, O_RDONLY);
+	if(src_fd == -1) {
+		printf("error: %s (%d)\n", strerror(errno), __LINE__);
+		return EXIT_FAILURE;
+	}
+
+	/* open destination file */
+	dst_fd = open(dst_name, O_WRONLY | O_EXCL | O_CREAT, S_IRUSR | S_IWUSR);
+	if(dst_fd == -1) {
+		printf("error: %s (%d)\n", strerror(errno), __LINE__);
+		return EXIT_FAILURE;
+	}
+
+	/* copy */
+	for(;;) {
+		ret = read(src_fd, buf, block_size);
+		if(ret == -1) {
+			printf("error: %s (%d)\n", strerror(errno), __LINE__);
+			return EXIT_FAILURE;
+		}
+		if(ret == 0) break;
+
+		int written = write(dst_fd, buf, ret);
+		if(written == -1) {
+			printf("error: %s (%d)\n", strerror(errno), __LINE__);
+			return EXIT_FAILURE;
+		}
+		copied += ret;
+	}
+
+	/* close */
+	close(src_fd);
+	close(dst_fd);
 
 	printf("%u bytes copied\n", copied);
 

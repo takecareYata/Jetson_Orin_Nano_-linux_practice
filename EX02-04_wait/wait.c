@@ -28,6 +28,7 @@ int main(int argc, char **argv)
 		pid = getpid();
 		msg = "this is child";
 		sleep(3);
+		//exit(8); //[17711] pid 17712 has been terminated with status 0x800
 	}
 	else {
 		pid_t pid_wait;
