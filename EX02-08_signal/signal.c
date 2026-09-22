@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 	printf("[%d] running %s\n", pid = getpid(), argv[0]);
 
 #if 1
-	sig_ret = signal(SIGINT, sigint_handler);
+	sig_ret = signal(SIGINT, sigint_handler); // ctrl + c 를 눌러도 종료되지 않고 함수가 호출됨
 	if(sig_ret == SIG_ERR) {
 		printf("[%d] can't set signal handler\n", pid);
 		return EXIT_FAILURE;

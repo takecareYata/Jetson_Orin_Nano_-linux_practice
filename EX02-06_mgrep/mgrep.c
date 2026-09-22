@@ -22,7 +22,9 @@ int main(int argc, char **argv)
 	num_of_child = argc - 2;
 
 	/* Implement code */
-	
+	pid_t pid_wait;
+	int status;
+
 	for (int x = 0; x < num_of_child; x++)
 	{
 		pid_temp = fork();
@@ -44,13 +46,11 @@ int main(int argc, char **argv)
         }
 	}
 
-	pid_t pid_wait;
-	int status;
-
-	for (int x = 0; x < num_of_child; x++) {
+	for (int x = 0; x < num_of_child; x++) 
+	{
 		printf("[%d] waiting child's termination\n", pid);
 		pid_wait = wait(&status);
-		printf("[%d] pid %d has been terminated with status %#x\n", pid, pid_wait, status);	
+		printf("[%d] pid %d has been terminated with status %#x\n", pid, pid_wait, status);
 	}
 
 	printf("[%d] terminted\n", pid);
