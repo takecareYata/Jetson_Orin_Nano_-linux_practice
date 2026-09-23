@@ -8,6 +8,8 @@
 #include <pthread.h>
 #include <sys/syscall.h>
 
+#define G_COUNT_MAX	20000
+
 pid_t pid;
 int g_count;
 pthread_mutex_t g_mutex;
@@ -23,6 +25,12 @@ void *thread_func1(void *arg)
 
 		/* Implement code */
 
+		if(g_count == max)
+		{
+			printf("[%d] thread1 counted %d\n",pid,count);
+			pthread_mutex_unlock(&g_mutex);
+			pthread_exit(NULL);
+		}
 
 		temp = g_count;
 		usleep(1);
@@ -44,6 +52,12 @@ void *thread_func2(void *arg)
 
 		/* Implement code */
 
+		if(g_count == max)
+		{
+			printf("[%d] thread2 counted %d\n",pid,count);
+			pthread_mutex_unlock(&g_mutex);
+			pthread_exit(NULL);
+		}
 
 		temp = g_count;
 		usleep(1);
@@ -58,7 +72,7 @@ int main(int argc, char **argv)
 {
 	pthread_t thread_id1, thread_id2;
 	int ret;
-	int n = 20000;
+	int n = G_COUNT_MAX;
 
 	if(argc != 1) {
 		printf("usage: %s\n", argv[0]);
