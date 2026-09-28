@@ -1,0 +1,16 @@
+- 과제 1
+이름 있는 세마포어를 적용해서 EX03-08 rw.c 파일을 posix 세마포어로 변환하기
+
+- 과제 2
+errno 변수는 여러 스레드가 동시에 사용 시 어떤 문제가 발생하는가?
+
+현대의 Linux (glibc) 및 POSIX C 라이브러리는 errno를 단순 전역 변수가 아닌 
+스레드 로컬 저장소(Thread Local Storage, TLS) 공간에 독립적으로 배치하거나 매크로로 재정의하여 이 문제를 해결한다.
+// POSIX 환경에서의 errno 실제 정의 형태 (매크로)
+#define errno (*__errno_location())
+errno를 호출할 때마다 내부적으로 __errno_location() 함수가 호출되어 현재 스레드 전용의 errno 주소를 반환한다.
+따라서 각 스레드는 서로 독립된 errno 공간을 가지게 되어 Thread-safe하게 동작하게 된다.
+errno는 ISO C 표준에 따라 변경 가능한 int 타입의 lvalue로 정의되며, 명시적으로 선언해서는 안 됩니다. 
+errno는 매크로일 수 있습니다. errno는 스레드 로컬(thread-local) 방식으로 작동하므로, 
+한 스레드에서 값을 설정하더라도 다른 스레드의 값에는 영향을 미치지 않습니다.
+

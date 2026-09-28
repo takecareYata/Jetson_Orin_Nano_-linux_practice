@@ -26,7 +26,27 @@ void *thread_maker(void *arg)
 	printf("[T%d] thread started\n", id);
 
 	/* Implement code */
+	for(;;) {
+		usec = (rand() % 500000) + 500000;
+        usleep(usec);
 
+		pthread_mutex_lock(&bread_mutex);
+
+		if(bread_count == NUM_OF_BREAD) {
+			pthread_mutex_unlock(&bread_mutex);
+			printf("[T%d] thread terminated\n", id);
+			pthread_exit(NULL);
+		}
+
+		bread_count++;
+		printf("[T%d]bread %03d\n", id, bread_count);
+		
+		if(bread_count%10 == 0 ) {
+			sem_post(&box_sem);
+		}
+
+		pthread_mutex_unlock(&bread_mutex);
+	}
 
 }
 
@@ -38,7 +58,18 @@ void *thread_boxer(void *arg)
 
 	/* Implement code */
 
+	for(;;) {
+		sem_wait(&box_sem);
+		
+		sleep(5);
 
+		box_count++;
+		printf("[T%d]box %02d\n", id, box_count);
+		if(box_count == NUM_OF_BOX) {
+			printf("[T%d] thread terminated\n", id);
+			pthread_exit(NULL);
+		}
+	}
 }
 
 void *(*thread_func[NUM_OF_THREAD])(void *arg) = {
