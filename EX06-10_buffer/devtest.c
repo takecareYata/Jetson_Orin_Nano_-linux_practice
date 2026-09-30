@@ -36,8 +36,26 @@ static long device_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	printk("devtest: device_ioctl (minor = %d)\n", minor);
 
 	/* Implement code */
+	switch(cmd) {
+		case MY_IOCTL_CMD_CLEAR_BUF:
+			printk("devtest: MY_IOCTL_CMD_CLEAR_BUF\n");
+			my_buf[minor].wr = 0;
+			my_buf[minor].rd = 0;
+			break;
+		case MY_IOCTL_CMD_GET_FREE_BUF_SIZE:
+			printk("devtest: MY_IOCTL_CMD_GET_FREE_BUF_SIZE\n");
+			data = buf_size - my_buf[minor].wr;
+			if(copy_to_user((int *)arg, &data, sizeof(int))) {
+				return -EFAULT;
+			}
+			break;
+		default:
+			printk("devtest: unknown command\n");
+			ret = -EINVAL;
+			break;
+	}
 
-
+	return ret;
 }
 
 static ssize_t device_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
@@ -48,8 +66,17 @@ static ssize_t device_read(struct file *filp, char __user *buf, size_t count, lo
 	printk("devtest: device_read (minor = %d)\n", minor);
 
 	/* Implement code */
+	rlen = my_buf[minor].wr - my_buf[minor].rd;
+	if(rlen > count) {
+		rlen = count;
+	}
+	if(copy_to_user(buf, my_buf[minor].buf + my_buf[minor].rd, rlen)) {
+		return -EFAULT;
+	}
+	my_buf[minor].rd += rlen;
+	printk("devtest: read %ld bytes\n", rlen);
 
-
+	return rlen;
 }
 
 static ssize_t device_write(struct file *filp, const char __user *buf, size_t count, loff_t *f_pos)
@@ -60,8 +87,17 @@ static ssize_t device_write(struct file *filp, const char __user *buf, size_t co
 	printk("devtest: device_write (minor = %d)\n", minor);
 
 	/* Implement code */
+	wlen = buf_size - my_buf[minor].wr;
+	if(wlen > count) {
+		wlen = count;
+	}
+	if(copy_from_user(my_buf[minor].buf + my_buf[minor].wr, buf, wlen)) {
+		return -EFAULT;
+	}
+	my_buf[minor].wr += wlen;
+	printk("devtest: wrote %ld bytes\n", wlen);
 
-
+	return wlen;
 }
 
 static int device_open(struct inode *inode, struct file *filp)

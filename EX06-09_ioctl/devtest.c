@@ -32,7 +32,11 @@ static long device_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		case MY_IOCTL_CMD_TWO:
 
 			/* Implement code */
-
+			if(copy_from_user(&data, (int *)arg, sizeof(int) ))
+			{
+				printk("devtest: MY_IOCTL_CMD_TWO Fail\n");
+				return (-EFAULT);
+			}
 
 			printk("devtest: MY_IOCTL_CMD_TWO(%d)\n", data);
 			ret = 2;

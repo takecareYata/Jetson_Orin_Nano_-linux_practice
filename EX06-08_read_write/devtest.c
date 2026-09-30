@@ -24,7 +24,20 @@ static ssize_t device_read(struct file *filp, char __user *buf, size_t count, lo
 	printk("devtest: device_read (minor = %d)\n", iminor(filp->f_path.dentry->d_inode));
 
 	/* Implement code */
+	if(MAX_BUF > count)
+	{
+		rlen = count;
+	}
+	else
+	{
+		rlen = MAX_BUF;
+	}
 
+	if(copy_to_user( buf, rbuf ,rlen))
+	{
+		printk("devtest: read fail\n");
+		return (-EFAULT);
+	}
 
 	printk("devtest: read %ld bytes\n", rlen);
 
@@ -38,7 +51,20 @@ static ssize_t device_write(struct file *filp, const char __user *buf, size_t co
 	printk("devtest: device_write (minor = %d)\n", iminor(filp->f_path.dentry->d_inode));
 
 	/* Implement code */
+	if(MAX_BUF > count)
+	{
+		wlen = count;
+	}
+	else
+	{
+		wlen = MAX_BUF;
+	}
 
+	if(copy_from_user( wbuf, buf ,wlen))
+	{
+		printk("devtest: write fail\n");
+		return (-EFAULT);
+	}
 
 	printk("devtest: wrote %ld bytes\n", wlen);
 
@@ -66,7 +92,8 @@ static const struct file_operations my_fops = {
 	.release = device_release,
 
 	/* Implement code */
-
+	.read = device_read,
+	.write = device_write,
 
 };
 
