@@ -86,14 +86,22 @@ static long device_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			printk("devtest: MY_IOCTL_CMD_IRQ_EN\n");
 
 			/* Implement code */
-
+			if(irq_enabled == 0) 
+			{
+				enable_irq(irq_key);
+				irq_enabled = 1;
+			}
 
 			break;
 		case MY_IOCTL_CMD_IRQ_DIS:
 			printk("devtest: MY_IOCTL_CMD_IRQ_DIS\n");
 
 			/* Implement code */
-
+			if(irq_enabled)
+			{ 
+				disable_irq(irq_key);
+				irq_enabled = 0;
+			}
 
 			break;
 		default:
@@ -164,8 +172,14 @@ static const struct file_operations my_fops = {
 irqreturn_t key_isr(int irq, void *dev_id)
 {
 	/* Implement code */
+	static int count = 0;
+	if(irq_enabled) 
+	{
+		count++;
+	}
+	printk("devtest: %s: count = %d\n", __FUNCTION__, count);
 
-
+	return IRQ_HANDLED;
 }
 
 static int __init device_init(void)
@@ -213,7 +227,8 @@ static int __init device_init(void)
 	led_init();
 
 	irq_key = gpio_to_irq(GPIO_KEY);
-	if(request_irq(/* Implement code */)) {
+	if(request_irq(irq_key, key_isr, IRQF_TRIGGER_FALLING, "key_int", NULL)) /* 인터럽트 등록 */
+	{
 		printk("devtest: IRQ %d is not free\n", irq_key);
 		ret = -EIO;
 		goto err4;

@@ -347,7 +347,7 @@ static struct resource my_resources[] = {
 };
 
 static struct my_platform_config my_config = {
-	.led_status = 0,
+	.led_status = 1,/* 초기 동작시 led on */
 };
 
 struct platform_device my_platform_device = {

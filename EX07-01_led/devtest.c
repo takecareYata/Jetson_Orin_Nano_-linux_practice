@@ -37,23 +37,21 @@ static struct resource *gpio_mem;
 
 static void led_init(void)
 {
-	/* Implement code */
-
-
+	printk("devtest: led init start\n");
+	iowrite32((ioread32((void *)(gpio_base+GPIO_OUTPUT_VALUE)) & ~(0x1<<0)), (void *)(gpio_base+GPIO_OUTPUT_VALUE));
+	iowrite32((ioread32((void *)(gpio_base+GPIO_OUTPUT_CONTROL)) & ~(0x1<<0)), (void *)(gpio_base+GPIO_OUTPUT_CONTROL));
+	iowrite32((ioread32((void *)(gpio_base+GPIO_ENABLE_CONFIG)) & ~(0x3<<0)) | (0x3<<0), (void *)(gpio_base+GPIO_ENABLE_CONFIG));
+	printk("devtest: led init end\n");
 }
 
 static void led_on(void)
 {
-	/* Implement code */
-
-
+	iowrite32((ioread32((void *)(gpio_base+GPIO_OUTPUT_VALUE)) | (0x1<<0)), (void *)(gpio_base+GPIO_OUTPUT_VALUE));
 }
 
 static void led_off(void)
 {
-	/* Implement code */
-
-
+	iowrite32((ioread32((void *)(gpio_base+GPIO_OUTPUT_VALUE)) & ~(0x1<<0)), (void *)(gpio_base+GPIO_OUTPUT_VALUE));
 }
 
 static long device_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
@@ -180,7 +178,7 @@ static int __init device_init(void)
 	}
 #endif
 
-	gpio_base = (unsigned long)ioremap(/* Implement code */);
+	gpio_base = (unsigned long)ioremap(GPIO_PHY_BASE, GPIO_PHY_SIZE);/* GPIO 사용 set*/
 	if (gpio_base == 0) {
 		printk("devtest: ioremap error\n");
 		ret = -EIO;
