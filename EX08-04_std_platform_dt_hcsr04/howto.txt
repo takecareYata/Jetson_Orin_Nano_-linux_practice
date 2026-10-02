@@ -1,0 +1,36 @@
+1. 디바이스 트리에 노드 추가
+
+	my_pdev@2212880 {
+		compatible = "my-pdev";
+		reg = <0x0 0x02212880 0x0 0x20>;
+		interrupt-parent = <0xf3>;
+		interrupts = <133 3>;
+	}; 
+
+2. 실행 방법
+sudo mknod /dev/mydev c 120 0
+sudo rmmod devtest
+sudo insmod devtest.ko
+sudo ./apptest D
+- 실행 결과 예시
+--------------------------
+apptest: /dev/mydev opened
+apptest: call ioctl() with MY_IOCTL_CMD_GET_DIST
+apptest: return value is 0
+apptest: distence is 822 us (14.172414 cm)
+apptest: /dev/mydev closed
+--------------------------
+sudo dmesg | tail
+- 실행 결과 예시
+--------------------------
+[472727.562930] devtest: IRQ 278 is enabled
+[472733.280862] devtest: device_open (minor = 0)
+[472733.280956] devtest: device_ioctl (minor = 0)
+[472733.280958] devtest: MY_IOCTL_CMD_GET_DIST
+[472733.280973] devtest: waiting key event
+[472733.283204] devtest: hcsr04_isr(): isr_count= 1
+[472733.284030] devtest: hcsr04_isr(): isr_count= 2
+[472733.284032] devtest: distance = 822 us
+[472733.284048] devtest: awoken!
+[472733.284139] devtest: device_release
+--------------------------

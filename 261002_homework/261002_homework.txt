@@ -1,0 +1,36 @@
+##################################
+리눅스 커널의 DT 예시 
+##################################
+
+# 현재 시스템의 DT 읽어오기
+cd ~/work
+sudo dtc -I fs -O dts -o extracted.dts /proc/device-tree
+
+##################################
+디바이스 트리 활용 (DT 수정)
+##################################
+
+# ~/work/extracted.dts에 아래와 같이 my_pdev 노드 추가
+
+	my_pdev@2212880 {
+		compatible = "my-pdev";
+		reg = <0x0 0x02212880 0x0 0x20>;
+		interrupt-parent = <0xf3>;
+		interrupts = <133 2>;
+		led_status = <0>;
+	};
+
+# extracted.dts를 컴파일하여 modified.dtb 생성
+dtc -I dts -O dtb -o modified.dtb extracted.dts
+
+# modified.dtb를 /boot로 복사
+sudo cp modified.dtb /boot/modified.dtb
+
+# 부팅 시 적용할 DT 변경
+sudo vi /boot/extlinux/extlinux.conf
+
+
+		FDT /boot/modified.dtb
+
+# 재부팅
+sudo reboot
