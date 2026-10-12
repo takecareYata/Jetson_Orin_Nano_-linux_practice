@@ -1,9 +1,26 @@
+# 젯슨오린나노 핀설정 페이지 접속
+sudo /opt/nvidia/jetson-io/jetson-io.py
+
+# 핀설정 다음과 같이 설정
+ |      [ ] unused [*] gpio [ ] aud            (7)                    |
+ |      [*] unused [ ] gpio [ ] extperiph3_clk (29)                   |
+ |      [ ] unused [*] gpio [ ] extperiph4_clk (31)                   |
+ |      [ ] unused [ ] gpio [*] i2c2           (27,28)                |
+ |      [ ] unused [ ] gpio [*] i2c8           (3,5)                  |
+ |      [ ] unused [*] gpio [ ] i2s2           (12,35,38,40)          |
+ |      [*] unused [ ] gpio [ ] pwm1           (15)                   |
+ |      [*] unused [ ] gpio [ ] pwm5           (33)                   |
+ |      [ ] unused [ ] gpio [*] pwm7           (32)                   |
+ |      [*] unused [ ] gpio [ ] spi1           (19,21,23,24,26)       |
+ |      [*] unused [ ] gpio [ ] spi3           (13,16,18,22,37)       |
+ |      [ ] unused [ ] gpio [*] uarta          (8,10)                 |
+ |      [ ] unused [*] gpio [ ] uarta-cts/rts  (11,36) 
+
 # 디바이스 드라이버 등록
 sudo mknod /dev/mydev c 120 0
 
 # pwm0 채널을 활성화 (이미 존재하여 에러가 나면 무시해도 됩니다)
 sudo sh -c 'echo 0 > /sys/class/pwm/pwmchip3/export'
-
 
 ## test
 # 1. Period 설정 (예: 1ms = 1,000,000 ns)
