@@ -6,7 +6,7 @@ CC := aarch64-linux-gnu-gcc
 
 default:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
-	$(CC) -Wall -o apptest apptest.c
+	$(CC) -Wall -o apptest main.c lcd.c bmp180.c motor.c switch.c
 
 clean:
 	rm -f *.o *.ko *.mod *.mod.c modules.order Module.symvers
