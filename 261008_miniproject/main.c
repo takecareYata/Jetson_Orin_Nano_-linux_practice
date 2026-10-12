@@ -13,6 +13,8 @@
 
 #define DEV_NAME    "/dev/mydev" // 드라이버 등록 이름에 맞춤 (예: /dev/my_pdev 인 경우 수정 필요)
 #define I2C_DEV     "/dev/i2c-7"
+#define MAX_TEMP    35.0
+#define MIN_TEMP    20.0
 
 /* 모터 제어 모드 정의 */
 typedef enum {
@@ -24,11 +26,11 @@ typedef enum {
 
 /* 온도를 모터 속도(0~100%)로 변환하는 함수 */
 int temp_to_speed(double temp) {
-    if (temp <= 20.0) return 0;
-    if (temp >= 40.0) return 100;
+    if (temp <= MIN_TEMP) return 0;
+    if (temp >= MAX_TEMP) return 100;
 
-    double step_size = (40.0 - 20.0) / 8.0; // 2.5도 간격
-    int level = (int)((temp - 20.0) / step_size);
+    double step_size = (MAX_TEMP - MIN_TEMP) / 8.0; // 2.5도 간격
+    int level = (int)((temp - MIN_TEMP) / step_size);
 
     if (level > 7) level = 7;
     if (level < 0) level = 0;
@@ -119,7 +121,7 @@ int main(int argc, char *argv[])
                         
                         set_sysfs_pwm(speed);
 
-                        snprintf(buf, sizeof(buf), "Spd:%3d%% Cnt:%4d", speed, count);
+                        snprintf(buf, sizeof(buf), "Spd:%3d%%          ", speed);
                         lcd_print(i2c_fd, 1, 0, buf);
 
                         last_speed = speed;
@@ -136,7 +138,7 @@ int main(int argc, char *argv[])
                 speed = temp_to_speed(current_temp);
                 set_sysfs_pwm(speed);
 
-                snprintf(buf, sizeof(buf), "Temp:%.1fC Spd:%d%", current_temp, speed);
+                snprintf(buf, sizeof(buf), "Tmp:%.1fC Sp:%d%%", current_temp, speed);
                 lcd_print(i2c_fd, 1, 0, buf);
                 
                 // 불필요한 usleep 제거하여 반응 속도 향상
