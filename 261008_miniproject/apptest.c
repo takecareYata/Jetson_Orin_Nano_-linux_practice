@@ -8,22 +8,26 @@
 #include "my_ioctl.h"
 
 #define DEV_NAME "/dev/mydev"
-#define PWM_PERIOD_NS "1000000" // 1kHz (주기 1ms = 1,000,000 ns)
 
-/* sysfs에 PWM 값 적용 지원 함수 */
+/* sysfs에 PWM Duty Cycle(ns) 적용 함수 */
 void set_sysfs_pwm(int duty_percent) {
-	int fd;
-	char buf[64];
-	long long period_ns = 1000000;
-	long long duty_ns = (period_ns * duty_percent) / 100;
+	FILE *fp;
+	long long period_ns = 1000000LL; // 1ms (1,000,000 ns)
+	long long duty_ns = (period_ns * (long long)duty_percent) / 100LL;
 
-	/* pwmchip0 -> pwmchip3 경로로 수정 */
-	fd = open("/sys/class/pwm/pwmchip3/pwm0/duty_cycle", O_WRONLY);
-	if (fd >= 0) {
-		snprintf(buf, sizeof(buf), "%lld", duty_ns);
-		write(fd, buf, strlen(buf));
-		close(fd);
+	/* Jetson sysfs PWM duty_cycle 경로 */
+	fp = fopen("/sys/class/pwm/pwmchip3/pwm0/duty_cycle", "w");
+	if (fp == NULL) {
+		perror("[APP Error] sysfs pwm open failed");
+		return;
 	}
+
+	/* duty_cycle 값 정수 문자열로 저장 */
+	fprintf(fp, "%lld\n", duty_ns);
+	fflush(fp);
+	fclose(fp);
+
+	printf("  -> [sysfs PWM] Set Duty Cycle: %lld ns (%d%%)\n", duty_ns, duty_percent);
 }
 
 int main(int argc, char *argv[])
@@ -56,7 +60,7 @@ int main(int argc, char *argv[])
 				last_speed = speed;
 			}
 		}
-		usleep(50000); // 50ms 대기
+		usleep(2000); // 50ms 대기
 	}
 
 	close(fd);

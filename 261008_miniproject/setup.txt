@@ -1,0 +1,16 @@
+# 디바이스 드라이버 등록
+sudo mknod /dev/mydev c 120 0
+
+# pwm0 채널을 활성화 (이미 존재하여 에러가 나면 무시해도 됩니다)
+sudo sh -c 'echo 0 > /sys/class/pwm/pwmchip3/export'
+
+
+## test
+# 1. Period 설정 (예: 1ms = 1,000,000 ns)
+sudo sh -c 'echo 1000000 > /sys/class/pwm/pwmchip3/pwm0/period'
+
+# 2. 초기 Duty Cycle 설정 (예: 30% = 300,000 ns)
+sudo sh -c 'echo 300000 > /sys/class/pwm/pwmchip3/pwm0/duty_cycle'
+
+# 3. PWM 출력 활성화 (1로 설정해야 파형이 나감)
+sudo sh -c 'echo 1 > /sys/class/pwm/pwmchip3/pwm0/enable'
